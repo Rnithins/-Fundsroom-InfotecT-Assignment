@@ -1,5 +1,5 @@
 services:
-  # Backend API Express Service
+  # Backend Express API Web Service
   - type: web
     name: mini-erp-backend
     env: node
@@ -22,14 +22,13 @@ services:
       - key: JWT_EXPIRES_IN
         value: 1d
       - key: CORS_ORIGIN
-        value: https://mini-erp-frontend.onrender.com
+        value: "*"
 
   # Frontend React SPA Static Site
   - type: web
     name: mini-erp-frontend
     env: static
     rootDir: frontend
-    region: singapore
     buildCommand: npm install && npm run build
     staticPublishPath: dist
     routes:
@@ -38,11 +37,7 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        fromService:
-          type: web
-          name: mini-erp-backend
-          property: url
-          suffix: /api
+        value: https://mini-erp-backend.onrender.com/api
 
 databases:
   # Render PostgreSQL Database
