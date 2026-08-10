@@ -255,6 +255,19 @@ Key Endpoints Summary:
 
 ---
 
+## 🚀 1-Click Render Deployment Guide
+
+1. Log into your **[Render.com](https://render.com)** Dashboard.
+2. Click **New +** -> **Blueprint**.
+3. Connect your GitHub repository (`https://github.com/Rnithins/-Fundsroom-InfotecT-Assignment`).
+4. Render will automatically detect the `render.yaml` Blueprint in the root directory and provision:
+   * **Managed PostgreSQL Database** (`mini-erp-db`)
+   * **Backend Express API Web Service** (`mini-erp-backend`)
+   * **Frontend React Static Site** (`mini-erp-frontend`)
+5. Click **Apply Blueprint**. Render will build the applications, run Prisma schema sync, seed default user accounts, and launch live public URLs!
+
+---
+
 ## ☁️ AWS Deployment Documentation
 
 Follow this step-by-step guide to deploy the application to Production on AWS using **EC2, RDS PostgreSQL, and S3 / CloudFront**.
