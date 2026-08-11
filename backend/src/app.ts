@@ -52,16 +52,44 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/activity-logs', activityRoutes);
 
-// Health check & Root routes
-app.get(['/', '/health', '/api', '/api/health'], (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'Mini ERP + CRM Backend API is running',
-    environment: config.nodeEnv,
-    swaggerDocs: '/api/docs',
-    timestamp: new Date().toISOString(),
+import path from 'path';
+import fs from 'fs';
+
+// Serve React Frontend Static Files (if available)
+const publicDir = path.join(process.cwd(), 'public');
+const fallbackFrontend = path.join(process.cwd(), '../frontend/dist');
+
+const staticDir = fs.existsSync(publicDir)
+  ? publicDir
+  : fs.existsSync(fallbackFrontend)
+  ? fallbackFrontend
+  : null;
+
+if (staticDir) {
+  app.use(express.static(staticDir));
+  app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'OK', environment: config.nodeEnv, timestamp: new Date().toISOString() });
   });
-});
+  app.get('/api', (req, res) => {
+    res.status(200).json({ status: 'OK', message: 'Mini ERP API Endpoint', swaggerDocs: '/api/docs' });
+  });
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api') || req.path === '/health') return next();
+    res.sendFile(path.join(staticDir, 'index.html'));
+  });
+} else {
+  // Health check & Root routes fallback
+  app.get(['/', '/health', '/api', '/api/health'], (req, res) => {
+    res.status(200).json({
+      success: true,
+      message: 'Mini ERP + CRM Backend API is running',
+      environment: config.nodeEnv,
+      swaggerDocs: '/api/docs',
+      timestamp: new Date().toISOString(),
+    });
+  });
+}
+
 
 
 // Centralized Error Handler
