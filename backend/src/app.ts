@@ -52,10 +52,17 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/activity-logs', activityRoutes);
 
-// Health check
-app.get('/health', (req, res) => {
-  res.status(200).json({ status: 'OK', environment: config.nodeEnv, timestamp: new Date().toISOString() });
+// Health check & Root routes
+app.get(['/', '/health', '/api', '/api/health'], (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: 'Mini ERP + CRM Backend API is running',
+    environment: config.nodeEnv,
+    swaggerDocs: '/api/docs',
+    timestamp: new Date().toISOString(),
+  });
 });
+
 
 // Centralized Error Handler
 app.use(errorHandler);

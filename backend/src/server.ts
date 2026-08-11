@@ -14,10 +14,11 @@ async function startServer() {
     await prisma.$connect();
     console.log('✅ PostgreSQL connected via Prisma ORM');
 
-    app.listen(config.port, () => {
-      console.log(`🚀 Mini ERP Backend running on http://localhost:${config.port}`);
-      console.log(`📚 Swagger API Docs available at http://localhost:${config.port}/api/docs`);
+    app.listen(config.port, '0.0.0.0', () => {
+      console.log(`🚀 Mini ERP Backend running on port ${config.port}`);
+      console.log(`📚 Swagger API Docs available at /api/docs`);
     });
+
   } catch (error) {
     console.error('❌ Failed to start server:', error);
     await prisma.$disconnect();
