@@ -2,6 +2,7 @@ import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { DashboardLayout } from '../layouts/DashboardLayout';
+import { LandingPage } from '../pages/LandingPage';
 import { LoginPage } from '../pages/LoginPage';
 import { DashboardPage } from '../pages/DashboardPage';
 import { CustomersPage } from '../pages/CustomersPage';
@@ -38,22 +39,21 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode; allowedRoles?: Role[
 export const AppRoutes: React.FC = () => {
   return (
     <Routes>
+      <Route path="/" element={<LandingPage />} />
       <Route path="/login" element={<LoginPage />} />
 
       <Route
-        path="/"
         element={
           <ProtectedRoute>
             <DashboardLayout />
           </ProtectedRoute>
         }
       >
-        <Route index element={<Navigate to="/dashboard" replace />} />
-        <Route path="dashboard" element={<DashboardPage />} />
+        <Route path="/dashboard" element={<DashboardPage />} />
 
         {/* CRM */}
         <Route
-          path="customers"
+          path="/customers"
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'SALES', 'ACCOUNTS']}>
               <CustomersPage />
@@ -61,7 +61,7 @@ export const AppRoutes: React.FC = () => {
           }
         />
         <Route
-          path="customers/:id"
+          path="/customers/:id"
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'SALES', 'ACCOUNTS']}>
               <CustomerDetailPage />
@@ -71,7 +71,7 @@ export const AppRoutes: React.FC = () => {
 
         {/* Products & Inventory */}
         <Route
-          path="products"
+          path="/products"
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'SALES', 'WAREHOUSE']}>
               <ProductsPage />
@@ -79,7 +79,7 @@ export const AppRoutes: React.FC = () => {
           }
         />
         <Route
-          path="products/:id"
+          path="/products/:id"
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'SALES', 'WAREHOUSE']}>
               <ProductDetailPage />
@@ -87,7 +87,7 @@ export const AppRoutes: React.FC = () => {
           }
         />
         <Route
-          path="inventory"
+          path="/inventory"
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'WAREHOUSE']}>
               <StockMovementsPage />
@@ -97,7 +97,7 @@ export const AppRoutes: React.FC = () => {
 
         {/* Sales Challans */}
         <Route
-          path="challans"
+          path="/challans"
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'SALES', 'WAREHOUSE', 'ACCOUNTS']}>
               <ChallansPage />
@@ -105,7 +105,7 @@ export const AppRoutes: React.FC = () => {
           }
         />
         <Route
-          path="challans/new"
+          path="/challans/new"
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'SALES']}>
               <ChallanFormPage />
@@ -113,7 +113,7 @@ export const AppRoutes: React.FC = () => {
           }
         />
         <Route
-          path="challans/:id"
+          path="/challans/:id"
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'SALES', 'WAREHOUSE', 'ACCOUNTS']}>
               <ChallanDetailPage />
@@ -121,7 +121,7 @@ export const AppRoutes: React.FC = () => {
           }
         />
         <Route
-          path="challans/:id/edit"
+          path="/challans/:id/edit"
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'SALES']}>
               <ChallanFormPage />
@@ -131,7 +131,7 @@ export const AppRoutes: React.FC = () => {
 
         {/* Invoices */}
         <Route
-          path="invoices"
+          path="/invoices"
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'ACCOUNTS']}>
               <InvoicesPage />
@@ -139,7 +139,7 @@ export const AppRoutes: React.FC = () => {
           }
         />
         <Route
-          path="invoices/:id"
+          path="/invoices/:id"
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'ACCOUNTS']}>
               <InvoiceDetailPage />
@@ -149,7 +149,7 @@ export const AppRoutes: React.FC = () => {
 
         {/* Reports */}
         <Route
-          path="reports"
+          path="/reports"
           element={
             <ProtectedRoute allowedRoles={['ADMIN', 'ACCOUNTS']}>
               <ReportsPage />
@@ -159,7 +159,7 @@ export const AppRoutes: React.FC = () => {
 
         {/* Admin User Management */}
         <Route
-          path="users"
+          path="/users"
           element={
             <ProtectedRoute allowedRoles={['ADMIN']}>
               <UsersPage />
@@ -168,7 +168,8 @@ export const AppRoutes: React.FC = () => {
         />
       </Route>
 
-      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 };
+
