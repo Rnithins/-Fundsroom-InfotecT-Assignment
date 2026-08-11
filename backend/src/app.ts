@@ -20,6 +20,9 @@ import swaggerRouter from './swagger.js';
 
 const app: Application = express();
 
+// Trust proxy for rate limiting behind Render/Cloudflare proxies
+app.set('trust proxy', 1);
+
 // Security & Utility Middlewares
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors({ origin: true, credentials: true }));
