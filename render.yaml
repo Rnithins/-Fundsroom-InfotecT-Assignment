@@ -37,7 +37,8 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        value: https://mini-erp-backend.onrender.com/api
+        value: https://fundsroom-infotect-assignment-1.onrender.com/api
+
 
 databases:
   # Render PostgreSQL Database
