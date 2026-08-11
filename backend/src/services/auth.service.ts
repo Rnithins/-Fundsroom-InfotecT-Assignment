@@ -6,9 +6,15 @@ import { UnauthorizedError } from '../utils/errors.js';
 
 export class AuthService {
   static async login(email: string, password: string) {
-    const user = await prisma.user.findUnique({
-      where: { email },
-    });
+    let user;
+    try {
+      user = await prisma.user.findUnique({
+        where: { email },
+      });
+    } catch (dbError: any) {
+      console.error('❌ Database login error:', dbError);
+      throw new Error(`Database error during authentication: ${dbError.message || 'Unable to connect to database'}`);
+    }
 
     if (!user || !user.isActive) {
       throw new UnauthorizedError('Invalid email or password');
@@ -30,16 +36,20 @@ export class AuthService {
       { expiresIn: config.jwtExpiresIn as any }
     );
 
-    // Log Activity
-    await prisma.activityLog.create({
-      data: {
-        userId: user.id,
-        action: 'LOGIN',
-        entity: 'USER',
-        entityId: user.id,
-        description: `User ${user.name} logged in successfully`,
-      },
-    });
+    // Log Activity (non-blocking)
+    try {
+      await prisma.activityLog.create({
+        data: {
+          userId: user.id,
+          action: 'LOGIN',
+          entity: 'USER',
+          entityId: user.id,
+          description: `User ${user.name} logged in successfully`,
+        },
+      });
+    } catch (logErr) {
+      console.warn('⚠️ Non-fatal: Failed to record login activity log:', logErr);
+    }
 
     return {
       token,
