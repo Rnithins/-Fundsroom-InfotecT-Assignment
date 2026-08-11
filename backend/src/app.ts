@@ -56,15 +56,28 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/activity-logs', activityRoutes);
 
+app.get('/api/test-db', async (req, res) => {
+  try {
+    const userCount = await prisma.user.count();
+    const users = await prisma.user.findMany({ select: { id: true, email: true, role: true } });
+    res.status(200).json({ success: true, userCount, users, dbUrlConfigured: !!process.env.DATABASE_URL });
+  } catch (err: any) {
+    res.status(500).json({ success: false, message: err.message, name: err.name, code: err.code, stack: err.stack });
+  }
+});
+
 import path from 'path';
 import fs from 'fs';
 
 // Serve React Frontend Static Files (if available)
 const publicDir = path.join(process.cwd(), 'public');
+const backendPublicDir = path.join(process.cwd(), 'backend/public');
 const fallbackFrontend = path.join(process.cwd(), '../frontend/dist');
 
 const staticDir = fs.existsSync(publicDir)
   ? publicDir
+  : fs.existsSync(backendPublicDir)
+  ? backendPublicDir
   : fs.existsSync(fallbackFrontend)
   ? fallbackFrontend
   : null;

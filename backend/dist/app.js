@@ -52,16 +52,29 @@ app.use('/api/invoices', invoice_routes_js_1.default);
 app.use('/api/dashboard', dashboard_routes_js_1.default);
 app.use('/api/reports', report_routes_js_1.default);
 app.use('/api/activity-logs', activity_routes_js_1.default);
+app.get('/api/test-db', async (req, res) => {
+    try {
+        const userCount = await prisma_js_1.prisma.user.count();
+        const users = await prisma_js_1.prisma.user.findMany({ select: { id: true, email: true, role: true } });
+        res.status(200).json({ success: true, userCount, users, dbUrlConfigured: !!process.env.DATABASE_URL });
+    }
+    catch (err) {
+        res.status(500).json({ success: false, message: err.message, name: err.name, code: err.code, stack: err.stack });
+    }
+});
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 // Serve React Frontend Static Files (if available)
 const publicDir = path_1.default.join(process.cwd(), 'public');
+const backendPublicDir = path_1.default.join(process.cwd(), 'backend/public');
 const fallbackFrontend = path_1.default.join(process.cwd(), '../frontend/dist');
 const staticDir = fs_1.default.existsSync(publicDir)
     ? publicDir
-    : fs_1.default.existsSync(fallbackFrontend)
-        ? fallbackFrontend
-        : null;
+    : fs_1.default.existsSync(backendPublicDir)
+        ? backendPublicDir
+        : fs_1.default.existsSync(fallbackFrontend)
+            ? fallbackFrontend
+            : null;
 if (staticDir) {
     app.use(express_1.default.static(staticDir));
     app.get('/health', (req, res) => {
