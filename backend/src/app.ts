@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import { config } from './config/index.js';
+import { prisma } from './config/prisma.js';
 import { errorHandler } from './middleware/error.middleware.js';
 
 import authRoutes from './routes/auth.routes.js';
@@ -73,8 +74,14 @@ if (staticDir) {
   app.get('/health', (req, res) => {
     res.status(200).json({ status: 'OK', environment: config.nodeEnv, timestamp: new Date().toISOString() });
   });
-  app.get('/api', (req, res) => {
-    res.status(200).json({ status: 'OK', message: 'Mini ERP API Endpoint', swaggerDocs: '/api/docs' });
+  app.get('/api/test-db', async (req, res) => {
+    try {
+      const userCount = await prisma.user.count();
+      const users = await prisma.user.findMany({ select: { id: true, email: true, role: true } });
+      res.status(200).json({ success: true, userCount, users, dbUrlConfigured: !!process.env.DATABASE_URL });
+    } catch (err: any) {
+      res.status(500).json({ success: false, message: err.message, name: err.name, code: err.code, stack: err.stack });
+    }
   });
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api') || req.path === '/health') return next();
