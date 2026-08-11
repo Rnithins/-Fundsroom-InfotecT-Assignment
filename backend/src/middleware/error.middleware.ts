@@ -12,6 +12,11 @@ export const errorHandler = (
 ) => {
   console.error(`[Error] ${req.method} ${req.path}:`, err);
 
+  if (req.headers.origin) {
+    res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+  }
+
   if (err instanceof AppError) {
     return sendError(res, err.message, err.statusCode, err.errorCode, err.details);
   }
@@ -34,9 +39,11 @@ export const errorHandler = (
     }
   }
 
+  const errorMessage = err?.message || (typeof err === 'string' ? err : 'Server Error');
+
   return sendError(
     res,
-    process.env.NODE_ENV === 'production' ? 'Internal server error' : err.message || 'Server Error',
+    errorMessage,
     500,
     'INTERNAL_SERVER_ERROR'
   );
