@@ -1,7 +1,7 @@
 # Mini ERP + CRM Operations Portal
 
 A complete, production-grade, full-stack **Mini ERP + CRM Operations Portal** engineered for wholesale and distribution enterprises. Designed to streamline customer lead tracking, multi-warehouse inventory management, atomic stock movement transactions, sales delivery challans with product snapshots, automated invoice generation, and financial reporting.
-
+WEBSITE LIVE LINK - https://fundsroom-infotect-assignment-1.onrender.com/
 ---
 
 ## 🌟 Features
